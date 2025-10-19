@@ -1,22 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dynamic Quote Generator</title>
-  </head>
-  <body>
-    <h1>Dynamic Quote Generator</h1>
+<!-- Dynamic Quote Generator -->
+<section id="quote-app" aria-labelledby="quoteAppTitle">
+  <h2 id="quoteAppTitle">Dynamic Quote Generator</h2>
 
-    <div id="quoteDisplay"></div>
-    <button id="newQuote">Show New Quote</button>
-
-    <div>
-      <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-      <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-      <button id="addQuoteBtn">Add Quote</button>
+  <!-- Display area -->
+  <div id="display" style="margin-bottom: 12px;">
+    <blockquote id="currentQuote" style="font-style: italic; font-size: 1.1rem; min-height: 3rem;">No quote yet.</blockquote>
+    <div style="margin-top:8px;">
+      <button id="randomBtn">Show Random Quote</button>
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
     </div>
+  </div>
 
-    <script src="script.js"></script>
-  </body>
-</html>
+  <!-- Add new quote -->
+  <form id="addQuoteForm" style="margin-top: 16px;">
+    <input id="quoteText" type="text" placeholder="Enter quote text" required style="width:60%" />
+    <input id="quoteAuthor" type="text" placeholder="Author (optional)" style="width:30%; margin-left:6px;" />
+    <button type="submit">Add Quote</button>
+  </form>
+
+  <!-- Quote list (editable) -->
+  <section id="listSection" style="margin-top:18px;">
+    <h3>Saved Quotes</h3>
+    <ul id="quotesList" style="list-style: none; padding-left:0;"></ul>
+  </section>
+
+  <!-- Import / Export / Storage controls -->
+  <div id="storageControls" style="margin-top:14px;">
+    <button id="exportBtn">Export JSON</button>
+    <input type="file" id="importFile" accept=".json,application/json" />
+    <button id="clearLocalBtn">Clear Local Storage</button>
+    <button id="clearAllBtn">Clear Local & Session</button>
+  </div>
+
+  <div id="feedback" aria-live="polite" style="margin-top:12px; color: #1b5e20;"></div>
+</section>
+
+<!-- Link to script.js (place near end of body) -->
+<script src="script.js"></script>

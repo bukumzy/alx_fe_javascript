@@ -122,8 +122,12 @@ async function syncQuotes() {
 
   await pushQuotesToServer(mergedQuotes);
 
+  // ✅ Required alert
+  alert("Quotes synced with server!");
+
   console.log("✅ Sync complete:", new Date().toLocaleTimeString());
 }
+
 
 // 6️⃣ Automatically sync every 30 seconds
 setInterval(syncQuotes, 30000);

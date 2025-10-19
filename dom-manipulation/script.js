@@ -22,11 +22,22 @@ let selectedCategory = localStorage.getItem("selectedCategory") || "all";
 // ===== Populate dropdown with unique categories =====
 function populateCategories() {
   const uniqueCategories = ["all", ...new Set(quotes.map(q => q.category))];
-  categoryFilter.innerHTML = uniqueCategories
-    .map(cat => `<option value="${cat}">${cat}</option>`)
-    .join("");
+
+  // Clear previous options
+  categoryFilter.innerHTML = "";
+
+  // Create and append each option
+  uniqueCategories.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    categoryFilter.appendChild(option);
+  });
+
+  // Restore last selected category
   categoryFilter.value = selectedCategory;
 }
+
 
 // ===== Filter and show quotes =====
 function filterQuotes() {

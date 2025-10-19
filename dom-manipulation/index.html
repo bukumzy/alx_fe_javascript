@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Quote Generator</title>
+  <title>Dynamic Quote Generator with Categories</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -11,28 +11,36 @@
   <main class="quote-app">
     <h1>Dynamic Quote Generator</h1>
 
-    <!-- Display random quote -->
+    <!-- Category Filter -->
+    <div class="filter-section">
+      <label for="categoryFilter">Filter by Category:</label>
+      <select id="categoryFilter" onchange="filterQuotes()">
+        <option value="all">All Categories</option>
+      </select>
+    </div>
+
+    <!-- Display Area -->
     <p id="quoteDisplay" class="quote-display">Loading quote...</p>
 
-    <!-- Buttons for new quote and adding new one -->
+    <!-- Buttons -->
     <div class="controls">
       <button id="newQuoteBtn">✨ New Quote</button>
     </div>
 
-    <!-- Add new quote -->
+    <!-- Add New Quote -->
     <div class="add-section">
-      <input type="text" id="quoteInput" placeholder="Type a new quote here...">
+      <input type="text" id="quoteInput" placeholder="Enter a new quote">
+      <input type="text" id="categoryInput" placeholder="Enter category">
       <button id="addQuoteBtn">➕ Add Quote</button>
     </div>
 
-    <!-- ✅ JSON Import/Export Section -->
+    <!-- JSON Import/Export -->
     <div class="json-section">
       <button id="exportBtn">💾 Export Quotes (JSON)</button>
       <input type="file" id="importFile" accept=".json">
     </div>
   </main>
 
-  <!-- Link your JavaScript here -->
   <script src="script.js"></script>
 </body>
 </html>

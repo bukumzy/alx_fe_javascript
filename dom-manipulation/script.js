@@ -42,13 +42,24 @@ function addQuote() {
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
 
-  // Update DOM to show confirmation or updated quote list
+  // Update DOM to show confirmation
   const quoteDisplay = document.getElementById("quoteDisplay");
   quoteDisplay.innerHTML = `
     <p>New quote added successfully!</p>
     <p><strong>Quote:</strong> "${newQuoteText}"</p>
     <p><em>Category:</em> ${newQuoteCategory}</p>
   `;
+}
+
+// Function to dynamically create the Add Quote form (even if it already exists in HTML)
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
+  formContainer.innerHTML = `
+    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+    <button onclick="addQuote()">Add Quote</button>
+  `;
+  document.body.appendChild(formContainer);
 }
 
 // Event listener for the “Show New Quote” button

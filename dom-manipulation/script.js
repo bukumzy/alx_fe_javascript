@@ -1,58 +1,37 @@
-const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // mock server endpoint
-// Fetch data (simulate pulling quotes from server)
-async function fetchQuotesFromServer() {
-  try {
-    const response = await fetch(SERVER_URL);
-    const data = await response.json();
-    // For simulation, we'll take only first few items and map them as quotes
-    return data.slice(0, 5).map(item => ({
-      text: item.title,
-      author: "Server User",
-      category: "server"
-    }));
-  } catch (error) {
-    console.error("Failed to fetch from server:", error);
-    return [];
-  }
-}
+// ====================
+// 🔧 INITIALIZATION
+// ====================
 
-// Push local quotes to server (simulate sending updates)
-async function pushQuotesToServer(localQuotes) {
-  try {
-    const response = await fetch(SERVER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(localQuotes)
-    });
-    console.log("Quotes synced to server successfully!");
-  } catch (error) {
-    console.error("Failed to sync quotes:", error);
-  }
-}
-async function syncWithServer() {
-  const serverQuotes = await fetchQuotesFromServer();
-  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-
-  // Compare and resolve conflicts
-  const merged = resolveConflicts(localQuotes, serverQuotes);
-
-  // Update local storage
-  localStorage.setItem("quotes", JSON.stringify(merged));
-  quotes = merged;
+// Load quotes from localStorage when the page loads
+window.addEventListener("DOMContentLoaded", () => {
+  const savedQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+  quotes = savedQuotes;
   displayQuote();
+
+  // Load last viewed quote from sessionStorage
+  const lastQuote = JSON.parse(sessionStorage.getItem("lastViewedQuote"));
+  if (lastQuote) {
+    currentQuote = lastQuote;
+    displayQuote();
+  }
+});
+
+// Save last viewed quote to sessionStorage whenever a quote changes
+function saveLastViewedQuote(quote) {
+  sessionStorage.setItem("lastViewedQuote", JSON.stringify(quote));
+}
 
 // ====================
 // 🔄 SYNCING WITH SERVER
 // ====================
 
-const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // mock server endpoint
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
 // 1️⃣ Fetch quotes from mock server
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
     const data = await response.json();
-    // Simulate 5 server quotes
     return data.slice(0, 5).map(item => ({
       text: item.title,
       author: "Server User",
@@ -107,7 +86,7 @@ function notifyUser(message) {
   }, 4000);
 }
 
-// 5️⃣ Main Sync Function (required name)
+// 5️⃣ Main Sync Function
 async function syncQuotes() {
   console.log("🔁 Starting sync with server...");
   const serverQuotes = await fetchQuotesFromServer();
@@ -115,55 +94,53 @@ async function syncQuotes() {
 
   const mergedQuotes = resolveConflicts(localQuotes, serverQuotes);
 
-  // Save merged version locally
   localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
   quotes = mergedQuotes;
-  displayQuote(); // refresh displayed quote
-
+  displayQuote();
   await pushQuotesToServer(mergedQuotes);
 
-  // ✅ Required alert
   alert("Quotes synced with server!");
-
   console.log("✅ Sync complete:", new Date().toLocaleTimeString());
 }
-
 
 // 6️⃣ Automatically sync every 30 seconds
 setInterval(syncQuotes, 30000);
 
+// ====================
+// 📤 EXPORT & 📥 IMPORT QUOTES
+// ====================
 
-
-  // Push latest version to server
-  await pushQuotesToServer(merged);
-
-  console.log("Sync complete at", new Date().toLocaleTimeString());
+// Export quotes to JSON file
+function exportToJsonFile() {
+  const quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(quotes));
+  const dlAnchor = document.createElement("a");
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", "quotes.json");
+  dlAnchor.click();
 }
 
-// Sync every 30 seconds
-setInterval(syncWithServer, 30000);
-function resolveConflicts(localQuotes, serverQuotes) {
-  const merged = [...localQuotes];
-
-  serverQuotes.forEach(serverQuote => {
-    const exists = merged.some(local => local.text === serverQuote.text);
-    if (!exists) {
-      merged.push(serverQuote);
-    } else {
-      // Conflict: server quote overrides local
-      const index = merged.findIndex(local => local.text === serverQuote.text);
-      merged[index] = serverQuote;
-      notifyUser(`Conflict resolved: Updated quote "${serverQuote.text}" from server.`);
+// Import quotes from uploaded JSON file
+function importFromJsonFile(event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      localStorage.setItem("quotes", JSON.stringify(importedQuotes));
+      quotes = importedQuotes;
+      displayQuote();
+      alert("Quotes imported successfully!");
+    } catch (err) {
+      alert("Invalid file format!");
     }
-  });
+  };
+  reader.readAsText(file);
+}
 
-  return merged;
-}
-function notifyUser(message) {
-  const notice = document.getElementById("syncNotice");
-  notice.textContent = message;
-  notice.style.display = "block";
-  setTimeout(() => {
-    notice.style.display = "none";
-  }, 4000);
-}
+// ====================
+// 🎛️ EVENT LISTENERS
+// ====================
+
+document.getElementById("exportBtn")?.addEventListener("click", exportToJsonFile);
+document.getElementById("importFileInput")?.addEventListener("change", importFromJsonFile);
